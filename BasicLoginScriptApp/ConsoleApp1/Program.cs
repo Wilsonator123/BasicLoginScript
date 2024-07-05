@@ -5,10 +5,9 @@ while (!exit)
                       1. Login
                       2. Sign Up
                       x. Exit
-                      
+
                       """);
     string? userInput = Console.ReadLine();
-
     switch (userInput)
     {
         case "1":
@@ -28,16 +27,17 @@ while (!exit)
     }
 }
 
+//Methods are the same as java
 //Logging in user
 static void Login()
 {
-    //Enter Deatils
+    //Enter Details
     Console.WriteLine("Enter a username: ");
     string? inputName = Console.ReadLine();
     Console.WriteLine("Enter your password: ");
     string? inputPassword = Console.ReadLine();
 
-    //Check details aren't null
+    //Check details aren't empty 
     if (inputName == "" || inputPassword == "")
     {
         Console.WriteLine("Invalid username or password");
@@ -45,7 +45,9 @@ static void Login()
     }
 
     //Check if user exists and password is correct
-    string valid = IsValidUser(inputName, inputPassword) ? $"Welcome back {inputName}" : "Incorrect username or password";
+    string valid = IsValidUser(inputName, inputPassword)
+        ? $"Welcome back {inputName}"
+        : "Incorrect username or password";
 
     Console.WriteLine(valid);
     Console.WriteLine();
@@ -53,7 +55,7 @@ static void Login()
 
 
 //Signing user up
-static bool SignUp()
+static void SignUp()
 {
     //Enter a unique username
     Console.WriteLine("Please enter a username:");
@@ -76,11 +78,9 @@ static bool SignUp()
         Console.WriteLine("Passwords don't match! Please confirm your password");
         confirmedPassword = Console.ReadLine();
     }
-    
+
     //Create user
     CreateUser(inputName, inputPassword);
-
-    return true;
 }
 
 //Returns true if user exists and password correct (if parsed)
@@ -98,31 +98,31 @@ static bool IsValidUser(string username, string? password)
     return true;
 }
 
-
+// I used a website for handling file reading and writing
+// https://www.w3schools.com/cs/cs_files.php
 //Finding and returning user (if exists)
-    static string[] FindUser(string username)
+static string[] FindUser(string username)
+{
+    //Easier than ReadLines which returns as string
+    string[] users = File.ReadAllLines("users.txt");
+
+    //For each user in the file
+    foreach (string line in users)
     {
-        //Easier than ReadLines which returns as string
-        string[] users = File.ReadAllLines("users.txt");
-
-        //For each user in the file -> Can we simplify this?
-        foreach (string line in users)
-        {
-            //Split the user [username, password]
-            string[] user = line.Split(",");
-            //If the name is the one we are searching for
-            if (user[0] == username)
-                return user;
-        }
-
-        //No user found -> What would be a better return?
-        return ["", ""];
+        //Split the user [username, password]
+        string[] user = line.Split(",");
+        //If the name is the one we are searching for
+        if (user[0] == username)
+            return user;
     }
 
-    static void CreateUser(string username, string password)
-    {
-        //Add new user to the users.txt file
-        File.AppendAllText("./users.txt", $"{username},{password}\n");
-        Console.WriteLine("User Created! \n");
-        return;
-    }
+    //No user found -> What would be a better return?
+    return [""];
+}
+
+static void CreateUser(string username, string password)
+{
+    //Add new user to the users.txt file
+    File.AppendAllText("./users.txt", $"{username},{password}\n");
+    Console.WriteLine("User Created! \n");
+}
